@@ -8,6 +8,6 @@ target 'ProatomicOpenSubclasses_Example' do
   target 'ProatomicOpenSubclasses_Tests' do
     inherit! :search_paths
 
-    pod 'FBSnapshotTestCase'
+    #pod 'FBSnapshotTestCase'
   end
 end
