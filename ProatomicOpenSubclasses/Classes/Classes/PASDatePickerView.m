@@ -134,7 +134,7 @@
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     switch (self.datePickerViewType) {
-        case PADatePickerViewTypeAll:
+            case PADatePickerViewTypeAll:
             return 3;
             break;
         default:
@@ -149,23 +149,23 @@
     
     if (component == 0) {
         switch (self.datePickerViewType) {
-            case PADatePickerViewTypeMonthAndYear:
+                case PADatePickerViewTypeMonthAndYear:
                 return 12;
                 break;
-            case PADatePickerViewTypeAll:
-            case PADatePickerViewTypeDayAndMonth:
-            case PADatePickerViewTypeDayAndYear:
+                case PADatePickerViewTypeAll:
+                case PADatePickerViewTypeDayAndMonth:
+                case PADatePickerViewTypeDayAndYear:
                 return [self getNumberOfDaysInPickerView:pickerView];
                 break;
         }
     } else if (component == 1) {
         switch (self.datePickerViewType) {
-            case PADatePickerViewTypeDayAndYear:
-            case PADatePickerViewTypeMonthAndYear:
+                case PADatePickerViewTypeDayAndYear:
+                case PADatePickerViewTypeMonthAndYear:
                 return [self getNumberOfYears];
                 break;
-            case PADatePickerViewTypeAll:
-            case PADatePickerViewTypeDayAndMonth:
+                case PADatePickerViewTypeAll:
+                case PADatePickerViewTypeDayAndMonth:
                 return 12;
                 break;
         }
@@ -181,23 +181,23 @@
     NSString *result;
     if (component == 0) {
         switch (self.datePickerViewType) {
-            case PADatePickerViewTypeMonthAndYear:
+                case PADatePickerViewTypeMonthAndYear:
                 result = [self.monthNames objectAtIndex:row];
                 break;
-            case PADatePickerViewTypeAll:
-            case PADatePickerViewTypeDayAndYear:
-            case PADatePickerViewTypeDayAndMonth:
+                case PADatePickerViewTypeAll:
+                case PADatePickerViewTypeDayAndYear:
+                case PADatePickerViewTypeDayAndMonth:
                 result = [NSString stringWithFormat:@"%li", (long)(row+1)];
                 break;
         }
     } else if (component == 1) {
         switch (self.datePickerViewType) {
-            case PADatePickerViewTypeDayAndYear:
-            case PADatePickerViewTypeMonthAndYear:
+                case PADatePickerViewTypeDayAndYear:
+                case PADatePickerViewTypeMonthAndYear:
                 result = [NSString stringWithFormat:@"%li", (long)(self.year-row)];
                 break;
-            case PADatePickerViewTypeAll:
-            case PADatePickerViewTypeDayAndMonth:
+                case PADatePickerViewTypeAll:
+                case PADatePickerViewTypeDayAndMonth:
                 result = [self.monthNames objectAtIndex:row];
                 break;
         }
@@ -229,28 +229,28 @@
     
     if (component == 0) {
         switch (self.datePickerViewType) {
-            case PADatePickerViewTypeMonthAndYear:
+                case PADatePickerViewTypeMonthAndYear:
                 [dateComponents setMonth:row+1];
                 break;
-            case PADatePickerViewTypeAll:
-            case PADatePickerViewTypeDayAndYear:
-            case PADatePickerViewTypeDayAndMonth:
+                case PADatePickerViewTypeAll:
+                case PADatePickerViewTypeDayAndYear:
+                case PADatePickerViewTypeDayAndMonth:
                 [dateComponents setDay:row+1];
                 break;
         }
     } else if (component == 1) {
         switch (self.datePickerViewType) {
-            case PADatePickerViewTypeDayAndYear:
+                case PADatePickerViewTypeDayAndYear:
                 [pickerView reloadComponent:0];
                 [dateComponents setDay:[self selectedRowInComponent:0]+1];
                 [dateComponents setYear:_year - row];
-            case PADatePickerViewTypeMonthAndYear:
+                case PADatePickerViewTypeMonthAndYear:
                 [pickerView reloadComponent:0];
                 [dateComponents setMonth:[self selectedRowInComponent:0]+1];
                 [dateComponents setYear:_year - row];
                 break;
-            case PADatePickerViewTypeAll:
-            case PADatePickerViewTypeDayAndMonth:
+                case PADatePickerViewTypeAll:
+                case PADatePickerViewTypeDayAndMonth:
                 [pickerView reloadComponent:0];
                 [dateComponents setDay:[self selectedRowInComponent:0]+1];
                 [dateComponents setMonth:row+1];
@@ -291,25 +291,35 @@
     NSAssert(date, @"Date can't be NULL");
     _date = date;
     
-    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:date];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.timeZone = [[NSTimeZone alloc] initWithName:@"GMT"];
+    
+    [dateFormatter setDateFormat:@"dd"];
+    NSInteger day = [dateFormatter stringFromDate:date].integerValue;
+    
+    [dateFormatter setDateFormat:@"MM"];
+    NSInteger month = [dateFormatter stringFromDate:date].integerValue;
+    
+    [dateFormatter setDateFormat:@"yy"];
+    NSInteger year = [dateFormatter stringFromDate:date].integerValue;
     
     switch (self.datePickerViewType) {
-        case PADatePickerViewTypeDayAndYear:
-            [self selectRow:components.day-1 inComponent:0 animated:animated];
-            [self selectRow:_year - components.year inComponent:1 animated:animated];
+            case PADatePickerViewTypeDayAndYear:
+            [self selectRow:day-1 inComponent:0 animated:animated];
+            [self selectRow:_year - year inComponent:1 animated:animated];
             break;
-        case PADatePickerViewTypeMonthAndYear:
-            [self selectRow:components.month-1 inComponent:0 animated:animated];
-            [self selectRow:_year - components.year inComponent:1 animated:animated];
+            case PADatePickerViewTypeMonthAndYear:
+            [self selectRow:month-1 inComponent:0 animated:animated];
+            [self selectRow:_year - year inComponent:1 animated:animated];
             break;
-        case PADatePickerViewTypeDayAndMonth:
-            [self selectRow:components.day-1 inComponent:0 animated:animated];
-            [self selectRow:components.month-1 inComponent:1 animated:animated];
+            case PADatePickerViewTypeDayAndMonth:
+            [self selectRow:day-1 inComponent:0 animated:animated];
+            [self selectRow:month-1 inComponent:1 animated:animated];
             break;
-        case PADatePickerViewTypeAll:
-            [self selectRow:components.day-1 inComponent:0 animated:animated];
-            [self selectRow:components.month-1 inComponent:1 animated:animated];
-            [self selectRow:_year - components.year inComponent:2 animated:animated];
+            case PADatePickerViewTypeAll:
+            [self selectRow:day-1 inComponent:0 animated:animated];
+            [self selectRow:month-1 inComponent:1 animated:animated];
+            [self selectRow:_year - year inComponent:2 animated:animated];
             break;
     }
 }
