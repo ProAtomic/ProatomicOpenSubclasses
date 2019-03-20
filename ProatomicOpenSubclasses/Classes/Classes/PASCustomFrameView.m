@@ -67,7 +67,7 @@
 
 - (void)render{
     
-    [self setClipsToBounds:YES];
+    if (self.cornerRadius>0) [self setClipsToBounds:YES];
     
     [self.layer setCornerRadius:self.cornerRadius];
     [self.layer setBorderWidth:self.borderWidth];
@@ -131,7 +131,7 @@
     if (self.shouldLetTouchPass) {
         for (UIView *view in self.subviews) {
             if (!view.hidden && view.userInteractionEnabled && [view pointInside:[self convertPoint:point toView:view] withEvent:event])
-                return YES;
+            return YES;
         }
         
         return NO;
