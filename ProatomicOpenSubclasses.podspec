@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ProatomicOpenSubclasses'
-  s.version          = '0.0.4'
+  s.version          = '0.0.5'
   s.summary          = 'A short description of ProatomicOpenSubclasses.'
   s.description      = 'A very long description of ProatomicOpenSubclasses.'
 

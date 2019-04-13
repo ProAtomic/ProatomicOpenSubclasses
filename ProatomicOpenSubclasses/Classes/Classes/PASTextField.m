@@ -228,8 +228,11 @@
     
     if (self.dataValidationBlock) {
         RACSignal *validInput = [self.rac_textSignal map:self.dataValidationBlock];
+        RACSignal *changedText = [RACObserve(self, text) map:self.dataValidationBlock];
         
-        [validInput subscribeNext:^(NSNumber *isInputDataValid) {
+        RACSignal *mergedSignal = [RACSignal merge:@[validInput, changedText]];
+        
+        [mergedSignal subscribeNext:^(NSNumber *isInputDataValid) {
             if (self->_didSetupRAC) self->_dataValid = isInputDataValid.boolValue;
         }];
     }
