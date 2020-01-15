@@ -1,6 +1,6 @@
 //
 //  PASDatePickerView.m
-//  Pods
+//  ProatomicOpenSubclasses
 //
 //  Created by Guillermo Saenz on 6/11/16.
 //
@@ -73,6 +73,10 @@
 }
 
 - (void)reloadData {
+    [self reloadData:NO];
+}
+
+- (void)reloadData:(BOOL)force {
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[[NSLocale preferredLanguages] objectAtIndex:0]]];
     self.monthNames = [dateFormatter monthSymbols];
@@ -82,12 +86,14 @@
     
     _year = dateComponents.year;
     
-    [dateComponents setDay:1];
-    [dateComponents setMonth:1];
-    [dateComponents setYear:dateComponents.year];
-    _date = [calendar dateFromComponents:dateComponents];
-    
-    [self reloadAllComponents];
+    if (_date || force) {
+        [dateComponents setDay:1];
+        [dateComponents setMonth:1];
+        [dateComponents setYear:dateComponents.year];
+        _date = [calendar dateFromComponents:dateComponents];
+        
+        [self reloadAllComponents];
+    }
 }
 
 #pragma mark - Setters
@@ -223,6 +229,10 @@
 #pragma mark - UIPickerViewDelegate
 
 - (void)pickerView:pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    if (!self.date) {
+        [self reloadData:YES];
+    }
     
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:self.date];
